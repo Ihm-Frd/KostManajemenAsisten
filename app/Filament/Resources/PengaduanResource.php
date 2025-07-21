@@ -17,6 +17,10 @@ use App\Filament\Resources\PengaduanResource\RelationManagers;
 
 class PengaduanResource extends Resource
 {
+    public static function getPluralModelLabel(): string
+    {
+        return 'Data Pengaduan Kost'; // Judul halaman list
+    }
     protected static ?string $model = Pengaduan::class;
 
     protected static ?string $navigationIcon = 'heroicon-s-exclamation-triangle';
