@@ -31,15 +31,18 @@ class GaleriResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('judul')
                     ->required()
-                    ->helperText('Max 20 karakter')
-                    ->maxLength(20),
-                    Forms\Components\FileUpload::make('gambar')
+                    ->helperText('Max 50 karakter')
+                    ->maxLength(50),
+                Forms\Components\FileUpload::make('gambar')
                     ->directory('galeri') // tersimpan di storage/app/public/galeri
                     ->visibility('public')
+                    ->maxSize(3048) // 2 MB
+                    ->placeholder('gunakan file png/jpeg max 3mb')
+                    ->acceptedFileTypes(['image/jpeg', 'image/png'])
                     ->required(),
-                    Forms\Components\Textarea::make('deskripsi')
-                    ->maxLength(100)
-                    ->helperText('Max 100 karakter')
+                Forms\Components\Textarea::make('deskripsi')
+                    ->maxLength(130)
+                    ->helperText('Max 130 karakter')
                     ->columnSpanFull(),
             ]);
     }
@@ -56,7 +59,7 @@ class GaleriResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('judul')
                     ->searchable(),
-                    Tables\Columns\ImageColumn::make('gambar')
+                Tables\Columns\ImageColumn::make('gambar')
                     ->label('Foto')
                     ->url(fn ($record) => $record->gambar ? asset('storage/' . $record->gambar) : null, shouldOpenInNewTab: true)
                     ->searchable(),

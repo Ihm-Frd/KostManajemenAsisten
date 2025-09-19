@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Pengaduan;
+use App\Models\Galeri;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class PengaduanPolicy
+class GaleriPolicy
 {
     use HandlesAuthorization;
 
@@ -15,15 +15,15 @@ class PengaduanPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_pengaduan');
+        return $user->can('view_any_galeri');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Pengaduan $pengaduan): bool
+    public function view(User $user, Galeri $galeri): bool
     {
-        return $user->can('view_pengaduan');
+        return $user->can('view_galeri');
     }
 
     /**
@@ -31,23 +31,23 @@ class PengaduanPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_pengaduan');
+        return $user->can('create_galeri');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Pengaduan $pengaduan): bool
+    public function update(User $user, Galeri $galeri): bool
     {
-        return $user->can('update_pengaduan');
+        return $user->can('update_galeri');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Pengaduan $pengaduan): bool
+    public function delete(User $user, Galeri $galeri): bool
     {
-        return $user->can('delete_pengaduan');
+        return $user->can('delete_galeri');
     }
 
     /**
@@ -55,15 +55,15 @@ class PengaduanPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_pengaduan');
+        return $user->can('delete_any_galeri');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, Pengaduan $pengaduan): bool
+    public function forceDelete(User $user, Galeri $galeri): bool
     {
-        return $user->can('force_delete_pengaduan');
+        return $user->can('force_delete_galeri');
     }
 
     /**
@@ -71,15 +71,15 @@ class PengaduanPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_pengaduan');
+        return $user->can('force_delete_any_galeri');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, Pengaduan $pengaduan): bool
+    public function restore(User $user, Galeri $galeri): bool
     {
-        return $user->can('restore_pengaduan');
+        return $user->can('restore_galeri');
     }
 
     /**
@@ -87,15 +87,15 @@ class PengaduanPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_pengaduan');
+        return $user->can('restore_any_galeri');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, Pengaduan $pengaduan): bool
+    public function replicate(User $user, Galeri $galeri): bool
     {
-        return $user->can('replicate_pengaduan');
+        return $user->can('replicate_galeri');
     }
 
     /**
@@ -103,6 +103,6 @@ class PengaduanPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_pengaduan');
+        return $user->can('reorder_galeri');
     }
 }

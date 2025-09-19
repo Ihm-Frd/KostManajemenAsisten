@@ -52,8 +52,6 @@ class DataKamarResource extends Resource
                 ? ['unique:data_kamars,nama_kamar']
                 : []),// <- tidak divalidasi ulang saat edit
         
-        
-            
             Forms\Components\TextInput::make('lokasi')
                 ->label('Lokasi')
                 ->placeholder('Lokasi Kost Berada')
@@ -91,7 +89,7 @@ class DataKamarResource extends Resource
             })
             ->native(false),
 
-            Forms\Components\TextArea::make('keterangan')
+            Forms\Components\Textarea::make('keterangan')
                 ->label('Keterangan')
                 ->placeholder('Keterangan Kost')
                 ->required()

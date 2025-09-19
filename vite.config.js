@@ -1,19 +1,30 @@
+// import { defineConfig } from "vite";
+// import laravel from "laravel-vite-plugin";
 
-import { defineConfig } from 'vite';
-import laravel from 'laravel-vite-plugin';
+// export default defineConfig({
+//     server: {
+//         cors: true,
+//         host: "https://kostmanajemenasisten.web.id",
+//         hmr: {
+//             host: "https://kostmanajemenasisten.web.id",
+//         },
+//     },
+//     plugins: [
+//         laravel({
+//             input: ["resources/css/app.css", "resources/js/app.js"],
+//             refresh: true,
+//         }),
+//     ],
+// });
+
+import { defineConfig } from "vite";
+import laravel from "laravel-vite-plugin";
 
 export default defineConfig({
-  server: {
-    cors: true,
-    host: 'kostmanajemen.test',
-    hmr: {
-      host: 'kostmanajemen.test',
-    },
-  },
-  plugins: [
-    laravel({
-      input: ['resources/css/app.css', 'resources/js/app.js'],
-      refresh: true,
-    }),
-  ],
+    plugins: [
+        laravel({
+            input: ["resources/css/app.css", "resources/js/app.js"],
+            refresh: true,
+        }),
+    ],
 });

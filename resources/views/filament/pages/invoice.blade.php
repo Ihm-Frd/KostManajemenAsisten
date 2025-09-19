@@ -67,26 +67,32 @@
 
          {{-- TOMBOL AKSI --}}
         <div class="mt-6 flex gap-3 print:hidden">
-            <x-filament::button
-                wire:click="downloadPdf"
-                color="info"
-                icon="heroicon-o-arrow-down-tray"
-            >
-                Unduh PDF
-            </x-filament::button>
+            @php
+            $user = auth()->user();
+            $penghuni = $user->dataPenghuni;
+            @endphp
 
+            @if(
+                !$user->hasRole('penghuni') ||
+                ($penghuni && $penghuni->id === $dataPenghuniId)
+            )
+                <x-filament::button
+                    wire:click="downloadPdf"
+                    color="info"
+                    icon="heroicon-o-arrow-down-tray"
+                >
+                    Unduh PDF
+                </x-filament::button>
+            @endif
         @unless(auth()->user()?->hasRole('penghuni'))
             <x-filament::button
                 wire:click="kirimKeWhatsApp"
                 color="success"
-                icon="heroicon-o-chat-bubble-left-right"
-            >
+                icon="heroicon-o-chat-bubble-left-right">
                 Kirim ke WhatsApp
             </x-filament::button>
         @endunless
-
-        
-</div>
+        </div>
 
         </div>
     @else

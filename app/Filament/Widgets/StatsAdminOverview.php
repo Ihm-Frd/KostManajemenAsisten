@@ -14,7 +14,7 @@ class StatsAdminOverview extends BaseWidget
     {
         return [
             Stat::make('DataKamar', DataKamar::query()->count())
-            ->description('Data Penghuni Kost Anugrah Group')
+            ->description('Data Kamar Kost Anugrah Group')
             ->descriptionIcon('heroicon-m-arrow-trending-up')
             ->chart([7, 2, 10, 3, 15, 4, 17])
             ->color('success'),

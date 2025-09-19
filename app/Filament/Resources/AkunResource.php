@@ -92,7 +92,6 @@ class AkunResource extends Resource
                 Tables\Columns\TextColumn::make('user_detail')
                 ->alignCenter()
                 ->label('Identitas Akun')
-                ->searchable()
                 ->badge()
                 ->color(function ($record) {
                     if ($record->admin) {

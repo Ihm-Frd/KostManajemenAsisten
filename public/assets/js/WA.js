@@ -62,6 +62,7 @@ function WhatsApp() {
         }
 
         // Get Value
+        var via_url = templateText + via_url;
 
         var tujuan = $("#whatsapp .tujuan").val(),
             via_url = location,
@@ -70,9 +71,8 @@ function WhatsApp() {
             pesan = $("#whatsapp #pesan").val();
 
         // Add template text to via_url
-        var templateText =
-            "Website form masyarakat bertanya                                                               ";
-        via_url = templateText + via_url;
+        var templateText = "Web Form WhatsAppFast";
+        
 
         $(this).attr(
             "href",
@@ -86,6 +86,7 @@ function WhatsApp() {
                 "%0A%0APesan   :  %0A " +
                 pesan +
                 "   %0A%0A " +
+                
                 via_url
         );
 

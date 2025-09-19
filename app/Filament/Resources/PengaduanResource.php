@@ -83,8 +83,11 @@ class PengaduanResource extends Resource
                 Forms\Components\FileUpload::make('foto')
                     ->placeholder('Tambahkan gambar (Opsional)')
                     ->label('Foto')
+                    ->directory('pengaduan')
+                    ->maxSize(2048) // 2 MB
+                    ->acceptedFileTypes(['image/jpeg', 'image/png'])
                     ->nullable(),
-                Forms\Components\TextArea::make('deskripsi')
+                Forms\Components\Textarea::make('deskripsi')
                     ->label('Deskripsi')
                     ->placeholder('Silahkan tuliskan pengaduan anda ‼️')
                     ->required()
@@ -120,6 +123,7 @@ class PengaduanResource extends Resource
                 Tables\Columns\TextColumn::make('Penghuni.dataKamar.nama_kamar')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('Penghuni.dataKamar.lokasi')
+                    ->label('Lokasi')
                     ->searchable(),
                 Tables\Columns\IconColumn::make('Penghuni.no_wa')
                     ->searchable()
@@ -131,10 +135,10 @@ class PengaduanResource extends Resource
                     ->visible(fn () => ! auth()->user()?->hasRole('penghuni')),
                 Tables\Columns\ImageColumn::make('foto')
                     ->searchable()
-                    ->label('Bukti Transfer')
+                    ->label('Foto')
                     ->disk('public')
                     ->url(fn ($record) => $record->foto ? asset('storage/' . $record->foto) : null, shouldOpenInNewTab: true),
-                Tables\Columns\badgeColumn::make('status_pengaduan')
+                Tables\Columns\BadgeColumn::make('status_pengaduan')
                     ->badge()
                     ->color(function (string $state) {
                         return match ($state) {
@@ -144,7 +148,8 @@ class PengaduanResource extends Resource
                                 'ditolak' => 'danger',  
                                 default => 'info',    
                             };
-                        }),
+                        })
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('deskripsi')
                     ->limit(30)
                     ->searchable(),

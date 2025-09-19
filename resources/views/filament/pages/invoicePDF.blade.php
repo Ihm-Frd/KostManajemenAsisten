@@ -15,7 +15,9 @@
 </head>
 <body>
     <div class="header">
-        {{-- <img src="{{ asset('assets/img/Logo_AnugrahGroup2.png') }}" width="80" alt="Anugrah Group"> --}}
+        <br>
+        <br>
+        <br>
         <h2>ANUGRAH GROUP</h2>
         <p>Jl. Raya Serang - Cibarusah Serang, Kongsi No.33, RT.012/RW.06, Sukadami, Cikarang Sel., Kabupaten Bekasi, Jawa Barat 17530</p>
         <hr>

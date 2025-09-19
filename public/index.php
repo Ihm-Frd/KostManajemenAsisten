@@ -20,6 +20,11 @@ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php'))
     require $maintenance;
 }
 
+//BUAT HOSTING Cpanel (klo public nya dipisah)
+// if (file_exists($maintenance = __DIR__.'/../KostManajemen/storage/framework/maintenance.php')) {
+//     require $maintenance;
+// }
+
 /*
 |--------------------------------------------------------------------------
 | Register The Auto Loader
@@ -33,6 +38,9 @@ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php'))
 
 require __DIR__.'/../vendor/autoload.php';
 
+//BUAT HOSTING Cpanel (klo public nya dipisah)
+// require __DIR__.'/../KostManajemen/vendor/autoload.php';
+
 /*
 |--------------------------------------------------------------------------
 | Run The Application
@@ -43,6 +51,9 @@ require __DIR__.'/../vendor/autoload.php';
 | to this client's browser, allowing them to enjoy our application.
 |
 */
+
+//BUAT HOSTING Cpanel (klo public nya dipisah)
+// $app = require_once __DIR__.'/../KostManajemen/bootstrap/app.php';
 
 $app = require_once __DIR__.'/../bootstrap/app.php';
 

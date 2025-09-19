@@ -4,7 +4,28 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="{{ URL::to('assets/img/Logo_Anugrah Group.png') }}" type="image/x-icon">
     <title>KostManajemenAsisten</title>
+
+    
+     <!-- Bootstrap icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" />
+
+    <!-- TailWind CSS -->
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ asset('build/assets/app-524359a4.css') }}">
+    
+    <!-- JS -->
+    <!--<script src="{{ url('build/assets/app-b0b3f613.js/') }}" defer></script>-->
+    <script src="//unpkg.com/alpinejs" defer></script>
+
+    <!-- JS Form WhatsApp -->
+    <script src="{{ asset('assets/js/WA.js') }}" defer></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+    
+    <!-- java Scriprt TailWind -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Simpan Settingan Dark Mode -->
     <script>
@@ -14,22 +35,7 @@
         document.documentElement.classList.remove('dark')
       }
     </script>
-    
-     <!-- Bootstrap icon -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" />
 
-    <!-- TailWind CSS -->
-    @vite('resources/css/app.css')
-    
-    {{-- java Scriprt TailWind --}}
-    @vite('resources/js/home.js')
-
-    <script src="//unpkg.com/alpinejs" defer></script>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- JS Form WhatsApp -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     
   </head>
 
@@ -112,6 +118,80 @@
         </div>
        </header>
 
+         <script>
+    // Navbar fixed
+    window.onscroll = function () {
+      const header = document.querySelector("header");
+      const fixedNav = header.offsetTop;
+      const toTop = document.querySelector("#to-top");
+    
+      if (window.pageYOffset > fixedNav) {
+        header.classList.add("navbar-fixed");
+        toTop.classList.remove("hidden");
+      } else {
+        header.classList.remove("navbar-fixed");
+        toTop.classList.add("hidden");
+      }
+    };
+    
+    //hamburger menu (muncul saat mode android saja)
+    
+    const hamburger = document.querySelector("#hamburger");
+    const navMenu = document.querySelector("#nav-menu");
+    
+    hamburger.addEventListener("click", function () {
+      hamburger.classList.toggle("hamburger-active");
+      navMenu.classList.toggle("hidden");
+    });
+    
+    // Klik Sembarang Utk Close Pop Up Navbar Android
+    window.addEventListener("click", function (e) {
+      if (e.target != hamburger && e.target != navMenu) {
+        hamburger.classList.remove("hamburger-active");
+        navMenu.classList.add("hidden");
+      }
+    });
+    
+    // Dropdown Navbar (Tentang Desa )
+    var dropdownButton = document.getElementById("dropdownTentang");
+    var dropdownMenu = document.getElementById("dropdown");
+    
+    dropdownButton.addEventListener("click", function () {
+      dropdownMenu.classList.toggle("hidden");
+    });
+    
+    // Menutup dropdown saat mengklik di luar dropdown
+    window.addEventListener("click", function (event) {
+      if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+        dropdownMenu.classList.add("hidden");
+      }
+    });
+    
+    
+    // Dark Mode
+    const darkToggle = document.querySelector('#dark-toggle');
+    const html = document.querySelector('html');
+    
+    darkToggle.addEventListener('click', function()
+    {
+      if (darkToggle.checked) {
+        html.classList.add('dark');
+        localStorage.theme = 'dark'
+      } else {
+        html.classList.remove('dark');
+        localStorage.theme = 'light'
+    
+      }
+    });
+    
+    // Pindah Posisi Togle Sesuai Mode Yng Disimpan
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+         darkToggle.checked = true;
+        } else {
+          darkToggle.checked = false;
+        } 
+
+    </script>
         <!-- Navbar End -->
 
 
@@ -121,11 +201,12 @@
           <div class="container">
             <div class="flex flex-wrap">
               <!-- Tulisan Di kiri -->
-              <div class="w-full self-center px-4 lg:w-1/2">
+              <div class="w-full self-center px-4 lg:w-1/2 mb-10">
                 <h1 class="text-base font-semibold text-ijo md:text-xl">Selamat Datang 👋🏽</h1>
                 <h2 class="font-medium text-gelap text-lg lg:text-2xl mb-3 dark:text-white">Di Kost Manajemen Asisten <span class="block font-bold text-gelap text-4xl lg:text-5xl mt-1 dark:text-white">Konsisten</span></h2>
-                <p class="font-medium text-pudar mb-10 leading-relaxed dark:text-slate-400">by Anugrah Group</p>
-                <a href="{{ url('/admin/login') }}" class="text-base font-bold text-white bg-teal-500 py-3 px-8 rounded-full hover:shadow-xl hover:bg-teal-600 transition duration-300 ">Login Sekarang</a>
+                <p class="font-medium text-pudar leading-relaxed dark:text-slate-400">Products from Anugrah Group</p>
+                <p class="font-medium text-pudar mb-10 leading-relaxed dark:text-slate-400">Created by Ilham Firdaus</p>
+                <a href="{{ url('/admin/login') }}" class="text-base font-bold text-white bg-teal-500 py-3 px-8 rounded-full hover:shadow-xl hover:bg-teal-600 transition duration-300 z-59 ">Login Sekarang</a>
               </div>
 
               <!-- Gambar Dikanan  -->
@@ -135,9 +216,9 @@
 
                   <span class="absolute bottom-0 left-1/2 -translate-x-1/2 lg:scale-155">
                     <svg
-                      class="h-[400px] lg:h-[600px]"
+                      class="h-[300px] lg:h-[600px] "
                       width="500"
-                      height="400"
+                      height="300"
                       viewBox="0 0 200 200"
                       xmlns="http://www.w3.org/2000/svg"
                     >
@@ -263,7 +344,7 @@
                   <h3 class="text-semibold text-gelap text-2xl mb-4 dark:text-white">Alamat Kami</h3>
                   <p class="font-medium text-base text-pudar max-w-xl mb-6 dark:text-slate-300">Anugrah Group
                     Jl. Raya Serang - Cibarusah Serang, Kongsi No.33, RT.012/RW.06, Sukadami, Cikarang Sel., Kabupaten Bekasi, Jawa Barat 17530</p>
-                  <div class="container max-w-fit rounded-lg overflow-hidden object-center ">
+                  <div class="container max-w-fit rounded-lg overflow-hidden object-center mx-2">
                     <iframe
                       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.3094625291037!2d107.11877014272393!3d-6.353970208952262!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e699b7146405827%3A0x8dbba005e8814db0!2sAnugrah%20Group!5e0!3m2!1sid!2sid!4v1751389901168!5m2!1sid!2sid"
                       allowfullscreen=""
@@ -303,11 +384,13 @@
                     <!-- Background Gambar -->
                     <div class="absolute inset-0 w-full h-full bg-center bg-contain bg-no-repeat rounded-xl"
                          style="background-image: url('{{ asset('storage/' . $poster->gambar) }}')"></div>
-        
+                   
                     <!-- Overlay -->
                     <div class="absolute inset-0 bg-opacity-400"></div>
         
                     <!-- Konten Teks -->
+                     <a href="{{ asset('storage/' . $poster->gambar) }}" target="_blank">
+                         
                     <div class="relative z-10 h-full flex flex-col justify-end px-6 pb-6 text-white">
                       <div class="bg-black/60 backdrop-blur-sm p-4 rounded-lg">
                         <h3 class="text-3xl font-bold">{{ $poster->judul }}</h3>
@@ -319,6 +402,7 @@
                         @endif
                       </div>
                     </div>
+                    </a>
                     
                   </div>
                 </div>
@@ -395,7 +479,7 @@
        {{-- Portal Berita Enddddddd --}}
 
         <!-- Galeri -->
-        <section id="galeri" class="pt-36 pb-16 bg-slate-200 dark:bg-slate-800">
+       <section id="galeri" class="pt-36 pb-16 bg-slate-200 dark:bg-slate-800">
           <div class="container px-4">
             
             <!-- Header -->
@@ -408,16 +492,19 @@
             </div>
         
             <!-- Card Container -->
-            <div class="grid gap-2 grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 xl:w-10/12 xl:mx-auto">
+            <div class="grid gap-2 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:w-10/12 xl:mx-auto">
               @foreach($galeris as $index => $galeri)
               <div class="galeri-item bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden flex flex-col">
                 
                 <!-- Gambar -->
+                 <a href="{{ asset('storage/' . $galeri->gambar) }}" target="_blank">
+                     
                 <div class="h-48 w-full">
                   <img src="{{ asset('storage/' . $galeri->gambar) }}"
                        alt="galeri-{{ $index }}"
                        class="w-full h-full object-cover object-center">
                 </div>
+                    </a>
         
                 <!-- Konten -->
                 <div x-data="{ expanded: false }" class="p-4 flex flex-col flex-1 justify-between">
@@ -448,33 +535,34 @@
         
           </div>
         </section>
-
         <script>
-          document.addEventListener("DOMContentLoaded", () => {
-            const items = document.querySelectorAll(".galeri-item");
-            const maxVisible = 6;
-            let currentStart = 0;
-          
-            function updateGaleri() {
-              items.forEach((item, index) => {
-                item.classList.add("hidden");
-                if (
-                  index >= currentStart &&
-                  index < currentStart + maxVisible
-                ) {
-                  item.classList.remove("hidden");
-                }
-              });
-          
-              currentStart += maxVisible;
-              if (currentStart >= items.length) {
-                currentStart = 0;
+        document.addEventListener("DOMContentLoaded", () => {
+          const items = document.querySelectorAll(".galeri-item");
+          const maxVisible = window.innerWidth <= 640 ? 2 : 6; // layar kecil 2, besar 6
+          let currentStart = 0;
+        
+          function updateGaleri() {
+            items.forEach((item, index) => {
+              item.classList.add("hidden");
+              if (
+                index >= currentStart &&
+                index < currentStart + maxVisible
+              ) {
+                item.classList.remove("hidden");
               }
+            });
+        
+            currentStart += maxVisible;
+            if (currentStart >= items.length) {
+              currentStart = 0;
             }
-          
-            setInterval(updateGaleri, 6000);
-          });
-          </script>
+          }
+        
+          updateGaleri(); // <<< tambahkan ini supaya langsung rapi di awal
+          setInterval(updateGaleri, 6000);
+        });
+        </script>
+
           
         <!-- Galeri enddddd -->
 
@@ -515,7 +603,7 @@
                       ],
                       [
                           'title' => 'Trend Kelas Fasilitas',
-                          'image' => 'logo_tren.png',
+                          'image' => 'logo_Tren.png',
                           'bg' => 'bg-purple-300',
                           'items' => $statFasilitas,
                           'type' => 'list'
@@ -563,7 +651,7 @@
 
 
         <!-- Kontak Form -->
-        <section id="contact" class="pt-36 pb-32 bg-slate-200 dark:bg-slate-800 ">
+       <section id="contact" class="pt-36 pb-32 bg-slate-200 dark:bg-slate-800 ">
           <div class="container">
             <div class="w-full px-4">
               <div class="mx-auto text-center mb-16">
@@ -654,7 +742,7 @@
 
                 <!-- INSTAGRAM -->
                 <a
-                  href="https://www.instagram.com/ihm_frds/?igshid=MTIzZWQxMDU%3D"
+                  href="https://www.instagram.com/ihm_frd/?igshid=MTIzZWQxMDU%3D"
                   target="_blank"
                   class="w-12 h-12 mr-6 rounded-full flex justify-center items-center border text-pudar border-slate-400 hover:border-orange-900 hover:bg-orange-900 hover:text-white"
                   ><svg class="fill-current" width="30" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Instagram</title><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"/></svg>
@@ -665,7 +753,7 @@
                   </svg>
                 </a>
               </div>
-              <p class="font-medium text-xs text-slate-400 text-center ">Created With ❤️ By <a href="https://www.instagram.com/ihm_frds/?igshid=MTIzZWQxMDU%3D" target="_blank" class="text-bold hover:text-ijo"> Ilham Firdaus</a></p>
+              <p class="font-medium text-xs text-slate-400 text-center ">Created With ❤️ By <a href="https://www.instagram.com/ihm_frd" target="_blank" class="text-bold hover:text-ijo"> Ilham Firdaus</a></p>
             </div>
 
           </div>

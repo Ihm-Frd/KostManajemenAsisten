@@ -3,18 +3,23 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
-use Database\Seeders\DataPenghuniSeeder;
 use Database\Seeders\DataKamarSeeder;
+use Database\Seeders\PembayaranSeeder;
+use Database\Seeders\DataPenghuniSeeder;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
         $this->call([
-            DataKamarSeeder::class,
             UserSeeder::class,
+            DataKamarSeeder::class,
+            RoleSeeder::class,
             DataPenghuniSeeder::class,
+            TagihanSeeder::class,
+            PembayaranSeeder::class,
         ]);
     }
 }

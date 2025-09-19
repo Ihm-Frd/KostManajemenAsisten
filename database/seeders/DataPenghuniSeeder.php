@@ -3,34 +3,86 @@
 namespace Database\Seeders;
 
 use Carbon\Carbon;
+use App\Models\User;         // ⬅️ ini yang kurang
+use App\Models\DataKamar;    // pastikan ini juga ada
+use App\Models\DataPenghuni;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class DataPenghuniSeeder extends Seeder
 {
+    // public function run(): void
+    // {
+    //     \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+    //     \DB::table('data_penghunis')->truncate();
+    //     \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+
+    //     $users = User::all();
+    //     $kamarList = DataKamar::all();
+
+    //     foreach ($users as $index => $user) {
+    //         $kamar = $kamarList->random();
+
+    //         // Tentukan keterangan berdasarkan fasilitas
+    //         if (in_array($kamar->fasilitas, ['⭐', '⭐⭐'])) {
+    //             $keterangan = "Wc di luar serta tidak termasuk air & listrik";
+    //         } else {
+    //             $keterangan = "Tidak ada bayaran tambahan & Wc di dalam";
+    //         }
+
+    //         DataPenghuni::create([
+    //             'user_id'       => $user->id,
+    //             'data_kamar_id' => $kamar->id,
+    //             'nama'          => $user->name,
+    //             'nik'           => fake()->unique()->numerify('3204#########'),
+    //             'tgl_lahir'     => fake()->dateTimeBetween('1992-01-01', '2005-12-31')->format('Y-m-d'),
+    //             'no_wa'         => '08' . fake()->numerify('##########'),
+    //             'jns_kelamin'   => fake()->randomElement(['Laki-laki', 'Perempuan']),
+    //             'status'        => fake()->randomElement(['Aktif', 'Tidak Aktif']),
+    //             'pas_foto'      => 'penghuni_' . ($index + 1) . '.jpg',
+    //             'keterangan'    => $keterangan,
+    //         ]);
+    //     }
+    // }
     public function run(): void
-    {
-        $namaList = ['Admin', 'User'];
+{
+    \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+    \DB::table('data_penghunis')->truncate();
+    \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // Ambil 2 user dari tabel `users`
-        $users = DB::table('users')->take(2)->get();
+    $users = User::all();
+    $kamarList = DataKamar::all()->shuffle(); // acak kamar
 
-        for ($i = 0; $i < count($namaList); $i++) {
-            DB::table('data_penghunis')->insert([
-                'user_id' => $users[$i]->id, // Ambil user_id dari data users
-                'data_kamar_id' => rand(1, 5),
-                'nama' => $namaList[$i],
-                'nik' => '32040100' . str_pad($i + 1, 4, '0', STR_PAD_LEFT),
-                'tgl_lahir' => Carbon::now()->subYears(rand(18, 30))->format('Y-m-d'),
-                'no_wa' => '08' . rand(1000000000, 9999999999),
-                'jns_kelamin' => $i % 2 === 0 ? 'Laki-laki' : 'Perempuan',
-                'status' => $i % 2 === 0 ? 'Aktif' : 'Nonaktif',
-                'pas_foto' => 'penghuni_' . ($i + 1) . '.jpg',
-                'keterangan' => $i % 3 === 0 ? 'Tidak ada catatan khusus' : null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+    foreach ($users as $index => $user) {
+        if ($kamarList->isEmpty()) {
+            // Kalau kamar sudah habis, berhenti assign kamar ke user berikutnya
+            break;
         }
+
+        $kamar = $kamarList->pop(); // ambil 1 kamar dan keluarkan dari list
+
+        // Tentukan keterangan berdasarkan fasilitas kamar
+        if (in_array($kamar->fasilitas, ['⭐', '⭐⭐'])) {
+            $keterangan = "Wc di luar serta tidak termasuk air & listrik";
+        } else {
+            $keterangan = "Tidak ada bayaran tambahan & Wc di dalam";
+        }
+
+        DataPenghuni::create([
+            'user_id'       => $user->id,
+            'data_kamar_id' => $kamar->id,
+            'nama'          => $user->name,
+            'nik'           => fake()->unique()->numerify('3204#########'),
+            'tgl_lahir'     => fake()->dateTimeBetween('1992-01-01', '2005-12-31')->format('Y-m-d'),
+            'no_wa'         => '08' . fake()->numerify('##########'),
+            'jns_kelamin'   => fake()->randomElement(['Laki-laki', 'Perempuan']),
+            'status'        => 'Aktif',
+            'pas_foto'      => 'penghuni_' . ($index + 1) . '.jpg',
+            'keterangan'    => $keterangan,
+        ]);
     }
+}
+
 }

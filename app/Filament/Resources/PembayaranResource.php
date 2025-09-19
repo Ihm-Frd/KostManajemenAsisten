@@ -106,22 +106,26 @@ class PembayaranResource extends Resource
 
                 
             Forms\Components\FileUpload::make('invoice')
-            ->label('Upload Invoice')
-                ->placeholder ('File Berupa Tagihan Dari Pengelola Sesuai Periode Jpg/Png/Pdf')
-                ->helperText ('Kesalahan Upload Invoice Tagihan Akan Mempengaruhi Status Pembayaran Anda ‼️')
+                ->label('Upload Invoice')
+                ->placeholder('File PDF (max 2 MB) Berupa Tagihan Dari Pengelola Sesuai Periode')
+                ->helperText('Kesalahan upload akan mempengaruhi status pembayaran Anda ‼️')
                 ->directory('invoices')
                 ->required()
                 ->preserveFilenames()
-                ->visibility('public'),
+                ->visibility('public')
+                ->maxSize(2048) // 2048 KB = 2 MB
+                ->acceptedFileTypes(['application/pdf']),
         
             Forms\Components\FileUpload::make('bukti_transfer')
                 ->label('Bukti Transfer')
-                ->placeholder ('File Berupa Bukti Bayar / Transfer Yang Berformat Jpg/Png/Pdf')
+                ->placeholder ('File Berupa Bukti Bayar / Transfer Yang Berformat Jpg/Png Max 3mb')
                 ->helperText ('Pastikan Jumlah Bayar Sesuai Dengan Invoice Tagihan Anda ‼️')
                 ->directory('bukti-transfer')
                 ->required()
                 ->default('bayar ya')
-                ->preserveFilenames()
+                ->maxSize(3048) // 2 MB
+                ->acceptedFileTypes(['image/jpeg', 'image/png'])
+                // ->preserveFilenames()
                 ->visibility('public'),
         
             Forms\Components\DatePicker::make('tgl_bayar')
@@ -172,7 +176,7 @@ class PembayaranResource extends Resource
                         ->pluck('periode')
                         ->join(', ')
                 )
-                ->searchable()
+                // ->searchable()
                 ->wrap()
                 ->sortable(),
 
@@ -227,7 +231,7 @@ class PembayaranResource extends Resource
 
                 Tables\Actions\ActionGroup::make([
                         Tables\Actions\Action::make('proses')->label('⌚ Di Proses')->action(fn ($record) => $record->update(['status_pembayaran' => 'proses'])),
-                        Tables\Actions\Action::make('lunas')->label('✅ Lunas')->color('success')->action(fn ($record) => $record->update(['status_pembayaran' => 'selesai'])),
+                        Tables\Actions\Action::make('lunas')->label('✅ Lunas')->color('success')->action(fn ($record) => $record->update(['status_pembayaran' => 'lunas'])),
                         Tables\Actions\Action::make('tolak')->label('❌ Di Tolak')->color('danger')->action(fn ($record) => $record->update(['status_pembayaran' => 'ditolak'])),
                     ])->label(false)
                     ->icon('heroicon-s-currency-dollar')

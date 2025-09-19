@@ -31,7 +31,7 @@ class PengaduanTerbaru extends BaseWidget
                 ->label('Foto')
                 ->disk('public')
                 ->url(fn ($record) => $record->foto ? asset('storage/' . $record->foto) : null, shouldOpenInNewTab: true),
-            Tables\Columns\badgeColumn::make('status_pengaduan')
+            Tables\Columns\BadgeColumn::make('status_pengaduan')
                 ->label('Status')
                 ->badge()
                 ->color(function (string $state) {

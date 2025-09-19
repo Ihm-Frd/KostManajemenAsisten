@@ -23,4 +23,3 @@ Route::controller(HomeController::class)->group(function(){
 // });
 Route::get('/', [HomeController::class, 'home']);
 
-

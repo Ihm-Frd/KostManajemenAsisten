@@ -47,16 +47,26 @@ class PembayaranSaya extends Page implements HasTable
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\ImageColumn::make('invoice')
+            Tables\Columns\TextColumn::make('invoice')
                 ->label('Invoice')
-                ->disk('public')
-                ->url(fn ($record) => $record->invoice ? asset('storage/' . $record->invoice) : null, shouldOpenInNewTab: true),
+                ->formatStateUsing(fn($state) => $state ? '📄 Lihat File' : '-')
+                ->url(fn($record) => $record->invoice ? asset('storage/' . $record->invoice) : null, shouldOpenInNewTab: true),
 
             Tables\Columns\ImageColumn::make('bukti_transfer')
                 ->label('Bukti Transfer')
                 ->disk('public')
                 ->url(fn ($record) => $record->bukti_transfer ? asset('storage/' . $record->bukti_transfer) : null, shouldOpenInNewTab: true),
 
+            Tables\Columns\TextColumn::make('periode_tagihan')
+                ->label('Periode Tagihan')
+                ->getStateUsing(fn ($record) => 
+                    $record->tagihans
+                        ->pluck('periode')
+                        ->join(', ')
+                )
+                ->searchable()
+                ->wrap()
+                ->sortable(),    
             Tables\Columns\TextColumn::make('tgl_bayar')
                 ->label('Tanggal Bayar')
                 ->date(),
@@ -109,12 +119,14 @@ class PembayaranSaya extends Page implements HasTable
         return [
             Forms\Components\FileUpload::make('invoice')
                 ->label('Upload Invoice')
-                ->placeholder('File Berupa Tagihan Dari Pengelola Sesuai Periode Jpg/Png/Pdf')
-                ->helperText('Kesalahan Upload Invoice Tagihan Akan Mempengaruhi Status Pembayaran Anda ‼️')
+                ->placeholder('File PDF (max 2 MB) Berupa Tagihan Dari Pengelola Sesuai Periode')
+                ->helperText('Kesalahan upload akan mempengaruhi status pembayaran Anda ‼️')
                 ->directory('invoices')
                 ->required()
                 ->preserveFilenames()
-                ->visibility('public'),
+                ->visibility('public')
+                ->maxSize(2048) // 2048 KB = 2 MB
+                ->acceptedFileTypes(['application/pdf']),
 
             Forms\Components\FileUpload::make('bukti_transfer')
                 ->label('Bukti Transfer')
@@ -185,6 +197,7 @@ class PembayaranSaya extends Page implements HasTable
                 ->label('Catatan / Keterangan')
                 ->placeholder('Contoh: Mau bayar tanggal 01/07/2025')
                 ->rows(3)
+                ->required()
                 ->maxLength(500),
         ];
     }

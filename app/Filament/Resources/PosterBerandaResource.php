@@ -31,18 +31,23 @@ class PosterBerandaResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('judul')
                     ->required()
-                    ->maxLength(20),
+                    ->maxLength(50),
                 Forms\Components\Textarea::make('deskripsi')
                     ->required()
-                    ->helperText('maximal 100 karakter')
-                    ->maxLength(100)
+                    ->helperText('maximal 255 karakter')
+                    ->maxLength(255)
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('gambar')
                     ->directory('posters') // tersimpan di storage/app/public/posters
                     ->visibility('public')
+                    ->maxSize(9048) // 2 MB
+                    ->acceptedFileTypes(['image/jpeg', 'image/png'])
+                    ->placeholder('file poster berupa jpeg/png max 9mb')
+                    ->helpertext('Gunakan format landscape agar sesuai')
                     ->required(),
                 Forms\Components\TextInput::make('link')
                     ->nullable()
+                    ->placeholder('opsional')
                     ->maxLength(255),
             ]);
     }

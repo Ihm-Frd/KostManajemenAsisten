@@ -42,21 +42,22 @@ class DataPenghuni extends Model
     }
     
 
+    protected static function booted()
+    {
+        static::created(function ($penghuni) {
+            // Ubah status kamar jadi "Terpakai" setelah penghuni dibuat
+            $penghuni->dataKamar()->update([
+                'status_kamar' => 'Terpakai',
+            ]);
+        });
 
-protected static function booted()
-{
-    static::created(function ($penghuni) {
-        // Ubah status kamar jadi "Terpakai" setelah penghuni dibuat
-        $penghuni->dataKamar()->update([
-            'status_kamar' => 'Terpakai',
-        ]);
-    });
+        static::deleted(function ($penghuni) {
+            // Saat penghuni dihapus, kembalikan kamar jadi "Kosong"
+            $penghuni->dataKamar()->update([
+                'status_kamar' => 'Kosong',
+            ]);
+        });
+    }
 
-    static::deleted(function ($penghuni) {
-        // Saat penghuni dihapus, kembalikan kamar jadi "Kosong"
-        $penghuni->dataKamar()->update([
-            'status_kamar' => 'Kosong',
-        ]);
-    });
-}
+
 }

@@ -60,7 +60,8 @@ class DataPenghuniResource extends Resource
             Forms\Components\Select::make('user_id')
                 ->label('Akun Penghuni')
                 ->placeholder('Pilih Akun Untuk Penghuni')
-                ->unique()
+                ->unique(ignoreRecord: true)
+                ->disabled(fn (Get $get) => filled($get('id')))
                 ->dehydrated(true)
                 ->searchable()
                 ->label('Akun Penghuni')
@@ -84,12 +85,16 @@ class DataPenghuniResource extends Resource
                 ->placeholder('Pastikan NIK Berjumlah 16 Digit')
                 ->required()
                 ->numeric()
+                ->minLength(16)
+                ->maxLength(16)
+                ->rule('digits:16')
                 ->unique(ignoreRecord: true)
                 ->disabled(fn (Get $get) => filled($get('id'))),
             Forms\Components\TextInput::make('nama')
                 ->label('Nama Lengkap')
                 ->placeholder('Nama max 30 karakter')
-                ->unique()
+                ->unique(ignoreRecord: true)
+                ->disabled(fn (Get $get) => filled($get('id')))
                 ->maxLength(30)
                 ->required(),
             Forms\Components\DatePicker::make('tgl_lahir')
@@ -144,8 +149,11 @@ class DataPenghuniResource extends Resource
                 ]),
             Forms\Components\FileUpload::make('pas_foto')
                 ->label('Foto KTP')
-                ->placeholder('Foto Berformat jpg/png')
+                ->placeholder('Foto Berformat jpg/png Max 3mb')
+                ->directory('KTP_Penghuni')
                 ->label('Foto KTP')
+                ->maxSize(3048) // 2 MB
+                ->acceptedFileTypes(['image/jpeg', 'image/png' ])
                 ->required(),
         ])->columns(3);
     }
@@ -238,7 +246,8 @@ class DataPenghuniResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ])
-                ->color('danger'),
+                ->color('danger')
+                ->visible(fn () => ! auth()->user()?->hasRole('penghuni')),
                 ExportBulkAction::make()
                     ->exporter(DataPenghuniExporter::class)
                     ->color('info')
@@ -247,6 +256,7 @@ class DataPenghuniResource extends Resource
                         ExportFormat::Csv,
                         ExportFormat::Xlsx,
                     ])
+                    ->visible(fn () => ! auth()->user()?->hasRole('penghuni')),
             ]);
     }
 

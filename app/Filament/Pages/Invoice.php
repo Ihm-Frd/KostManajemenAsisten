@@ -8,6 +8,7 @@ use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Tables\Table;
 use App\Models\DataPenghuni;
+use Filament\Facades\Filament;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Forms\Components\Select;
 use Illuminate\Support\Facades\Route;
@@ -55,6 +56,7 @@ class Invoice extends Page implements HasTable
         }
     }
 
+
     public function form(Form $form): Form
     {
         return $form->schema([
@@ -64,7 +66,7 @@ class Invoice extends Page implements HasTable
                     ->options(function () {
                         // Cek role
                         $user = auth()->user();
-                        if ($user->hasRole('penghuni')) {
+                        if ($user->hasRole('Penghuni')) {
                             $penghuni = $user->dataPenghuni;
                             if (!$penghuni) return [];
 
@@ -87,7 +89,7 @@ class Invoice extends Page implements HasTable
                     })
                     ->default(function () {
                         $user = auth()->user();
-                        if ($user->hasRole('penghuni') && $user->dataPenghuni) {
+                        if ($user->hasRole('Penghuni') && $user->dataPenghuni) {
                             return $user->dataPenghuni->id;
                         }
 
@@ -96,10 +98,10 @@ class Invoice extends Page implements HasTable
                     ->searchable()
                     ->live()
                     ->required()
-
             ])
         ]);
     }
+    
 
     public function table(Table $table): Table
     {
@@ -118,6 +120,7 @@ class Invoice extends Page implements HasTable
                 Tables\Columns\TextColumn::make('catatan')->label('Catatan')->limit(30)->wrap()->toggleable(),
             ]);
     }
+
 
     public function getViewData(): array
     {
@@ -165,6 +168,7 @@ class Invoice extends Page implements HasTable
     $lines[] = "*Total:* Rp" . number_format($this->totalTagihan, 0, ',', '.');
     $lines[] = "";
     $lines[] = "_Silakan segera melakukan pembayaran melalui sistem. Terima kasih._";
+    $lines[] = "https://kostmanajemenasisten.web.id/admin/";
 
     $pesan = implode("\n", $lines);
 
@@ -173,61 +177,43 @@ class Invoice extends Page implements HasTable
     return redirect()->away($url);
 }
 
-// public function downloadPdf()
-// {
-//     $penghuni = $this->penghuni;
-//     $tagihans = Tagihan::where('data_penghuni_id', $penghuni->id)->where('status', '!=', 'lunas')->get();
-//     $total = $tagihans->sum('nominal');
+    public function downloadPdf()
+    {
+        $this->validateAccess($this->penghuni->id);
+        $penghuni = $this->penghuni;
+        $tagihans = Tagihan::where('data_penghuni_id', $penghuni->id)
+            ->where('status', '!=', 'lunas')
+            ->orderBy('periode') // pastikan periode urut
+            ->get();
 
-//     $pdf = Pdf::loadView('filament.pages.invoicePDF', compact('penghuni', 'tagihans', 'total'));
-//     return response()->streamDownload(fn () => print($pdf->stream()), 'invoice.pdf');
-// }
+        $total = $tagihans->sum('nominal');
 
-public function downloadPdf()
+        $pdf = Pdf::loadView('filament.pages.invoicePDF', compact('penghuni', 'tagihans', 'total'));
+
+        // Ambil periode paling awal & nama file yang rapi
+        $periodeAwal = $tagihans->first()?->periode ?? now()->format('Y-m');
+        $nama = str_replace(' ', '_', $penghuni->nama);
+        $kamar = str_replace(' ', '_', $penghuni->dataKamar->nama_kamar);
+
+        $namaFile = "{$kamar}_{$nama}_{$periodeAwal}.pdf";
+
+        return response()->streamDownload(fn () => print($pdf->stream()), $namaFile);
+    }    
+    
+
+
+    private function validateAccess($id)
 {
-    $penghuni = $this->penghuni;
-    $tagihans = Tagihan::where('data_penghuni_id', $penghuni->id)
-        ->where('status', '!=', 'lunas')
-        ->orderBy('periode') // pastikan periode urut
-        ->get();
+    $user = auth()->user();
 
-    $total = $tagihans->sum('nominal');
+    if ($user->hasRole('penghuni')) {
+        $penghuniId = $user->dataPenghuni->id ?? null;
 
-    $pdf = Pdf::loadView('filament.pages.invoicePDF', compact('penghuni', 'tagihans', 'total'));
-
-    // Ambil periode paling awal & nama file yang rapi
-    $periodeAwal = $tagihans->first()?->periode ?? now()->format('Y-m');
-    $nama = str_replace(' ', '_', $penghuni->nama);
-    $kamar = str_replace(' ', '_', $penghuni->dataKamar->nama_kamar);
-
-    $namaFile = "{$kamar}_{$nama}_{$periodeAwal}.pdf";
-
-    return response()->streamDownload(fn () => print($pdf->stream()), $namaFile);
+        if ($penghuniId !== (int) $id) {
+            abort(403, 'Anda tidak diizinkan mengakses data ini.');
+        }
+    }
 }
 
 
-    // public function kirimPdfKeWhatsApp()
-    // {
-    //     $penghuni = $this->penghuni;
-    //     if (!$penghuni || !$penghuni->no_wa) return;
-
-    //     $tagihans = \App\Models\Tagihan::where('data_penghuni_id', $penghuni->id)
-    //         ->where('status', '!=', 'lunas')
-    //         ->get();
-
-    //     $total = $tagihans->sum('nominal');
-
-    //     // ✅ Sesuaikan dengan lokasi blade kamu
-    //     $pdf = Pdf::loadView('filament.pages.invoicePDF', compact('penghuni', 'tagihans', 'total'))->output();
-
-    //     $filename = 'invoice_' . now()->timestamp . '.pdf';
-    //     Storage::disk('public')->put('invoices/' . $filename, $pdf);
-
-    //     $url = asset('storage/invoices/' . $filename);
-    //     $whatsappUrl = 'https://wa.me/' . preg_replace('/[^0-9]/', '', $penghuni->no_wa) . '?text=' . urlencode(
-    //         "*Wisma Anugrah Group*\nBerikut adalah link tagihan kost Anda dalam bentuk PDF:\n{$url}"
-    //     );
-
-    //     return redirect()->away($whatsappUrl);
-    // }
 }
