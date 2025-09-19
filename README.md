@@ -1,5 +1,5 @@
-<<<<<<< HEAD
-# KostManajemenAsisten
+#KostManajemenAsisten
+
 Kost Manajemen Asisten Adalah Sistem Pengelolaan Administra Kost Anugrah Group Yang Memiliki 1250 User.
 Ada 8 Fitur Utama Dalam WEb Ini, Yaitu :
 1. Konten halaman awal (poster & galeri)
