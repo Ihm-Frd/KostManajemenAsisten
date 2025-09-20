@@ -1,34 +1,44 @@
-# Gunakan PHP 8.2 + Apache
+# Gunakan PHP 8.2 dengan Apache
 FROM php:8.2-apache
 
-# Install dependensi OS
+# Install dependencies system
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
     libicu-dev \
     libzip-dev \
-    zip \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install intl zip pdo_mysql \
-    && docker-php-ext-enable intl zip pdo_mysql
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    && docker-php-ext-install \
+       pdo_mysql \
+       intl \
+       zip \
+       gd \
+    && a2enmod rewrite \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy composer
+# Copy composer dari official image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copy project
+# Copy project files
 COPY . .
 
-# Install dependencies
-RUN composer install --optimize-autoloader --no-scripts --no-interaction
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Laravel storage permission
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Laravel optimization
+RUN php artisan config:clear && \
+    php artisan route:clear && \
+    php artisan view:clear && \
+    mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache && \
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port
+# Expose port (Railway akan inject $PORT)
 EXPOSE 8000
 
-# Start Laravel via Artisan
-CMD php artisan serve --host=0.0.0.0 --port=8000
+# Jalankan Laravel pakai port dari Railway
+CMD php artisan serve --host=0.0.0.0 --port=$PORT
