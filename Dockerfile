@@ -1,27 +1,34 @@
-# Gunakan PHP 8.2 dengan Apache
+# Gunakan PHP 8.2 + Apache
 FROM php:8.2-apache
 
-# Install dependencies system
+# Install dependensi OS
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
     libicu-dev \
     libzip-dev \
+    zip \
+    && docker-php-ext-configure intl \
     && docker-php-ext-install intl zip pdo_mysql \
-    && a2enmod rewrite
+    && docker-php-ext-enable intl zip pdo_mysql
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy semua file project ke container
+# Copy composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copy project
 COPY . .
 
-# Install composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Install dependencies
 RUN composer install --optimize-autoloader --no-scripts --no-interaction
 
-# Expose port Railway
-EXPOSE 8080
+# Laravel storage permission
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Start Laravel
-CMD php artisan serve --host=0.0.0.0 --port=8080
+# Expose port
+EXPOSE 8000
+
+# Start Laravel via Artisan
+CMD php artisan serve --host=0.0.0.0 --port=8000
