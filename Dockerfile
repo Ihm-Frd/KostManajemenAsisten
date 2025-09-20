@@ -1,44 +1,45 @@
-# Gunakan PHP 8.2 dengan Apache
+# Gunakan PHP 8.2 + Apache
 FROM php:8.2-apache
 
-# Install dependencies system
+# Install dependency sistem yang dibutuhkan Laravel + Filament
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
     libicu-dev \
     libzip-dev \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    && docker-php-ext-install \
-       pdo_mysql \
-       intl \
-       zip \
-       gd \
-    && a2enmod rewrite \
-    && rm -rf /var/lib/apt/lists/*
+    zip \
+    && docker-php-ext-install intl zip pdo_mysql \
+    && a2enmod rewrite
 
-# Set working directory
+# Atur working directory
 WORKDIR /var/www/html
 
-# Copy composer dari official image
+# Copy composer dari image composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copy project files
+# Copy semua project
 COPY . .
 
-# Install PHP dependencies
+# Buat folder yang dibutuhkan Laravel
+RUN mkdir -p storage/framework/{cache,sessions,views} \
+    && mkdir -p bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+# Install dependencies PHP (tanpa dev, lebih ringan)
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Laravel optimization
-RUN php artisan config:clear && \
-    php artisan route:clear && \
-    php artisan view:clear && \
-    mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache && \
-    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Clear dan optimize cache Laravel
+RUN php artisan config:clear || true \
+    && php artisan cache:clear || true \
+    && php artisan route:clear || true \
+    && php artisan view:clear || true \
+    && php artisan optimize || true
 
-# Expose port (Railway akan inject $PORT)
+# Set permission agar Laravel bisa nulis ke storage & bootstrap
+RUN chown -R www-data:www-data storage bootstrap/cache
+
+# Expose port Railway
 EXPOSE 8000
 
-# Jalankan Laravel pakai port dari Railway
-CMD php artisan serve --host=0.0.0.0 --port=$PORT
+# Jalankan Laravel pakai artisan serve
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
