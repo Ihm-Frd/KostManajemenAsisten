@@ -5,3 +5,5 @@
 .phpunit.result.cache
 /storage/logs/*
 /storage/framework/*
+
+.vercel
