@@ -20,13 +20,16 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Copy semua project
 COPY . .
 
-# Buat folder yang dibutuhkan Laravel
+# Buat folder storage & cache sebelum composer install
 RUN mkdir -p storage/framework/{cache,sessions,views} \
     && mkdir -p bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Install dependencies PHP (tanpa dev, lebih ringan)
+# Install dependencies PHP
 RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+# Generate app key (supaya APP_KEY selalu ada)
+RUN php artisan key:generate --force
 
 # Clear dan optimize cache Laravel
 RUN php artisan config:clear || true \
